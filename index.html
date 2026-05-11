@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#5C3D2E">
+<title>義大利行程</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Serif TC',Georgia,serif;background:#F5EFE6;color:#3B2A1A;min-height:100vh;max-width:480px;margin:0 auto}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap');
+
+/* Header */
+.header{background:#3B2A1A;color:#F5EFE6;padding:16px 20px 12px;position:sticky;top:0;z-index:100}
+.header h1{font-size:20px;font-weight:700;letter-spacing:2px}
+.header p{font-size:12px;opacity:.7;margin-top:2px}
+.header-row{display:flex;justify-content:space-between;align-items:center}
+.edit-btn{background:#C9A96E;color:#3B2A1A;border:none;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* Day tabs */
+.day-tabs{display:flex;overflow-x:auto;gap:8px;padding:14px 16px;background:#EDE0CF;scrollbar-width:none}
+.day-tabs::-webkit-scrollbar{display:none}
+.day-tab{flex:0 0 auto;background:#fff;border-radius:14px;padding:10px 14px;text-align:center;cursor:pointer;transition:.2s;border:2px solid transparent;min-width:70px}
+.day-tab.active{background:#3B2A1A;color:#F5EFE6;border-color:#3B2A1A}
+.day-tab .dn{font-size:11px;opacity:.6;margin-bottom:2px}
+.day-tab .date{font-size:18px;font-weight:700}
+.day-tab .city{font-size:11px;margin-top:2px}
+
+/* Day title */
+.day-title{padding:16px 20px 8px;display:flex;align-items:center;gap:10px}
+.day-badge{background:#3B2A1A;color:#F5EFE6;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
+.day-name{font-size:18px;font-weight:700}
+
+/* Timeline */
+.timeline{padding:0 20px 20px}
+.t-item{display:flex;gap:12px;margin-bottom:4px}
+.t-left{display:flex;flex-direction:column;align-items:center;min-width:52px}
+.t-time{font-size:14px;font-weight:700;color:#5C3D2E;white-space:nowrap}
+.t-line{flex:1;width:2px;background:#D4B896;margin:4px auto 0}
+.t-right{flex:1;background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.t-title{font-size:16px;font-weight:700;line-height:1.3}
+.t-note{font-size:13px;color:#7A6350;margin-top:4px;line-height:1.5}
+.t-map{display:inline-block;margin-top:8px;background:#EDE0CF;color:#5C3D2E;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;text-decoration:none}
+.t-type-transport .t-right{border-left:4px solid #8BACC8}
+.t-type-meal .t-right{border-left:4px solid #C8A87A}
+.t-type-hotel .t-right{border-left:4px solid #A8C8A0}
+.t-type-sight .t-right{border-left:4px solid #C8A0B8}
+
+/* Info cards */
+.info-cards{padding:0 20px 20px}
+.info-card{background:#fff;border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.info-card-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.info-card-title{font-size:15px;font-weight:700}
+.info-card-body{padding:0 16px 12px;font-size:14px;color:#5C3D2E;line-height:1.7;display:none}
+.info-card.open .info-card-body{display:block}
+.chevron{transition:.2s;font-size:12px}
+.info-card.open .chevron{transform:rotate(180deg)}
+
+/* Edit modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal{background:#F5EFE6;border-radius:24px 24px 0 0;padding:24px 20px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:16px}
+.mode-btns{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.mode-btn{flex:1;min-width:120px;padding:10px;border:2px solid #D4B896;border-radius:12px;background:#fff;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+.mode-btn.active{background:#3B2A1A;color:#F5EFE6;border-color:#3B2A1A}
+.textarea{width:100%;min-height:180px;border:2px solid #D4B896;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;background:#fff;resize:vertical}
+.input-row{display:flex;gap:8px;margin-bottom:12px}
+.input-field{flex:1;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff}
+.modal-btns{display:flex;gap:10px;margin-top:14px}
+.btn-cancel{flex:1;padding:13px;border:2px solid #D4B896;border-radius:14px;background:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.btn-save{flex:2;padding:13px;border:none;border-radius:14px;background:#3B2A1A;color:#F5EFE6;font-size:15px;font-weight:700;cursor:pointer}
+
+/* Diff */
+.diff-add{background:#d4f5d4;border-radius:6px;padding:2px 6px}
+.diff-del{background:#f5d4d4;text-decoration:line-through;border-radius:6px;padding:2px 6px;color:#888}
+
+/* Helpers */
+.empty{text-align:center;color:#A89080;padding:40px 20px;font-size:15px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div>
+      <p>Buon Viaggio · 2025</p>
+      <h1>義大利 10 日</h1>
+    </div>
+    <button class="edit-btn" onclick="openModal()">編輯行程</button>
+  </div>
+</div>
+
+<div class="day-tabs" id="dayTabs"></div>
+
+<div id="dayContent"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>編輯行程</h2>
+    <div class="mode-btns">
+      <button class="mode-btn active" onclick="setMode('full',this)">全部重貼</button>
+      <button class="mode-btn" onclick="setMode('add',this)">新增一行</button>
+      <button class="mode-btn" onclick="setMode('del',this)">刪除一行</button>
+    </div>
+    <div id="modeUI"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" onclick="applyEdit()">確認</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== RAW ITINERARY DATA =====
+const DEFAULT_TEXT = `6/21 (六) 羅馬：抵達與市區適應
+09:20 抵達羅馬 FCO 機場
+11:30 抵達羅馬中央車站 Termini 飯店寄物
+13:00 遊玩：西班牙階梯、許願池、萬神殿 步行為主
+住宿：羅馬
+提醒：競技場門票需提早數週預約
+
+6/22 (日) 羅馬：第一整天
+09:00 遊玩：羅馬競技場、古羅馬廣場、帕拉提諾之丘
+午餐：競技場附近餐廳
+晚餐：台伯河畔 Trastevere 區
+住宿：羅馬
+提醒：競技場門票需提早數週預約
+
+6/23 (一) 羅馬：第二整天
+09:00 遊玩：梵蒂岡博物館、聖彼得大教堂、聖天使堡看落日
+午餐：梵蒂岡附近
+晚餐：Prati 區
+住宿：羅馬
+提醒：梵蒂岡博物館週一有開，需提早預約
+
+6/24 (二) 移動：羅馬 >> Vico Equense
+09:30 搭高鐵：羅馬至拿坡里
+11:30 轉私鐵：拿坡里至 Vico Equense
+14:00 遊玩：小鎮探索、品嚐 Pizza a Metro 披薩
+晚餐：Pizza a Metro
+住宿：Vico Equense
+
+6/25 (三) 南義：卡布里島
+08:30 搭私鐵至蘇連多港，換船往返卡布里島 含藍洞
+交通：蘇連多至卡布里船程約 25 分鐘
+午餐：卡布里島上
+晚餐：Vico Equense 小鎮
+住宿：Vico Equense
+
+6/26 (四) 龐貝城 >> 羅馬
+08:30 Vico 飯店退房，攜帶行李出發
+09:30 行李寄放：龐貝火車站 Pompeii Scavi 站官方寄物處
+09:45 遊玩：龐貝古城
+16:00 搭高鐵：拿坡里至羅馬 Termini
+午餐：龐貝城內
+住宿：羅馬
+備註：此日佛羅倫斯較貴，住羅馬省錢
+
+6/27 (五) 羅馬 >> 佛羅倫斯
+09:00 搭高鐵：羅馬至佛羅倫斯 S.M.N
+12:00 遊玩：聖母百花大教堂、領主廣場、老橋
+午餐：老橋附近
+晚餐：佛羅倫斯市區
+住宿：佛羅倫斯
+
+6/28 (六) 佛羅倫斯：第二整天
+09:30 遊玩：烏菲茲美術館、學院美術館 大衛像、米開朗基羅廣場看夕陽
+午餐：市場附近
+晚餐：Oltrarno 區
+住宿：佛羅倫斯
+
+6/29 (日) 佛羅倫斯 >> 威尼斯 Mestre
+09:20 搭高鐵：佛羅倫斯至 Venezia Mestre 車站
+12:00 入住 a&o Venezia Mestre 飯店寄物
+12:30 遊玩：搭火車10分鐘進本島，聖馬可廣場、大運河、貢多拉
+晚餐：威尼斯本島
+住宿：威尼斯 Mestre
+備註：a&o 較便宜
+
+6/30 (一) 威尼斯 >> 米蘭 >> 回程
+08:00 遊玩：威尼斯本島最後巡禮或彩色島
+12:30 搭高鐵：Mestre 至米蘭中央車站
+15:15 行李寄放車站，地鐵快閃米蘭大教堂拍照 1小時
+16:45 搭機場快線 Malpensa Express 往機場
+17:40 抵達 MXP 機場辦理登機
+19:45 飛機起飛`;
+
+// ===== PARSER =====
+function parseItinerary(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  const days = [];
+  let cur = null;
+
+  for (const line of lines) {
+    // Date line
+    if (/^\d+\/\d+/.test(line)) {
+      const m = line.match(/^(\d+\/\d+)\s*[（(]([^）)]+)[）)]?\s*(.*)/);
+      if (m) {
+        cur = { date: m[1], weekday: m[2], title: m[3] || '', items: [], hotel: '', lunch: '', dinner: '', transport: '', notes: [], rainBackup: '' };
+      } else {
+        cur = { date: line.match(/^(\d+\/\d+)/)[1], weekday: '', title: line.replace(/^\d+\/\d+\s*/, ''), items: [], hotel: '', lunch: '', dinner: '', transport: '', notes: [], rainBackup: '' };
+      }
+      days.push(cur);
+      continue;
+    }
+    if (!cur) continue;
+
+    // Special fields
+    if (line.startsWith('住宿：') || line.startsWith('住宿:')) { cur.hotel = line.replace(/^住宿[：:]/, ''); continue; }
+    if (line.startsWith('午餐：') || line.startsWith('午餐:')) { cur.lunch = line.replace(/^午餐[：:]/, ''); continue; }
+    if (line.startsWith('晚餐：') || line.startsWith('晚餐:')) { cur.dinner = line.replace(/^晚餐[：:]/, ''); continue; }
+    if (line.startsWith('交通：') || line.startsWith('交通:')) { cur.transport = line.replace(/^交通[：:]/, ''); continue; }
+    if (line.startsWith('提醒：') || line.startsWith('提醒:')) { cur.notes.push(line.replace(/^提醒[：:]/, '')); continue; }
+    if (line.startsWith('備註：') || line.startsWith('備註:')) { cur.notes.push(line.replace(/^備註[：:]/, '')); continue; }
+    if (line.startsWith('雨備：') || line.startsWith('雨備:')) { cur.rainBackup = line.replace(/^雨備[：:]/, ''); continue; }
+
+    // Time item
+    const tm = line.match(/^(\d{1,2}:\d{2})\s+(.*)/);
+    if (tm) {
+      const content = tm[2];
+      let type = 'sight';
+      if (/搭|高鐵|火車|公車|飛機|機場|轉|郵輪|船/.test(content)) type = 'transport';
+      else if (/午餐|晚餐|早餐|餐廳|吃/.test(content)) type = 'meal';
+      else if (/飯店|住宿|入住|寄物|退房/.test(content)) type = 'hotel';
+
+      const urlMatch = content.match(/https?:\/\/[^\s]+/);
+      cur.items.push({ time: tm[1], content: content.replace(/https?:\/\/[^\s]+/g, '').trim(), type, url: urlMatch ? urlMatch[0] : null });
+      continue;
+    }
+
+    // Sub-note
+    if (line.startsWith('>')) {
+      if (cur.items.length) {
+        const last = cur.items[cur.items.length - 1];
+        last.note = (last.note ? last.note + ' · ' : '') + line.slice(1).trim();
+        const urlMatch = line.match(/https?:\/\/[^\s]+/);
+        if (urlMatch && !last.url) last.url = urlMatch[0];
+      }
+      continue;
+    }
+
+    // Standalone URL
+    if (/^https?:\/\//.test(line)) {
+      if (cur.items.length) cur.items[cur.items.length - 1].url = cur.items[cur.items.length - 1].url || line;
+      continue;
+    }
+  }
+  return days;
+}
+
+// ===== STATE =====
+let rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
+let days = parseItinerary(rawText);
+let activeDay = 0;
+let editMode = 'full';
+
+// ===== RENDER =====
+function renderTabs() {
+  const el = document.getElementById('dayTabs');
+  el.innerHTML = days.map((d, i) => `
+    <div class="day-tab ${i === activeDay ? 'active' : ''}" onclick="selectDay(${i})">
+      <div class="dn">D${i + 1}</div>
+      <div class="date">${d.date}</div>
+      <div class="city">${getCityShort(d)}</div>
+    </div>`).join('');
+  setTimeout(() => el.children[activeDay]?.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
+}
+
+function getCityShort(d) {
+  const t = d.title || '';
+  if (t.includes('羅馬')) return '羅馬';
+  if (t.includes('佛羅倫斯')) return '佛羅倫斯';
+  if (t.includes('威尼斯')) return '威尼斯';
+  if (t.includes('米蘭')) return '米蘭';
+  if (t.includes('卡布里')) return '卡布里';
+  if (t.includes('龐貝')) return '龐貝';
+  if (t.includes('Vico')) return 'Vico';
+  return d.date;
+}
+
+function typeLabel(type) {
+  return { transport: '交通', meal: '餐食', hotel: '住宿', sight: '景點' }[type] || '';
+}
+
+function renderDay() {
+  const d = days[activeDay];
+  if (!d) return;
+  let html = `<div class="day-title"><span class="day-badge">第 ${activeDay + 1} 天</span><span class="day-name">${d.title}</span></div>`;
+  html += '<div class="timeline">';
+  if (!d.items.length) { html += '<div class="empty">暫無行程</div>'; }
+  else {
+    d.items.forEach((item, i) => {
+      const isLast = i === d.items.length - 1;
+      html += `<div class="t-item t-type-${item.type}">
+        <div class="t-left">
+          <div class="t-time">${item.time}</div>
+          ${!isLast ? '<div class="t-line"></div>' : ''}
+        </div>
+        <div class="t-right">
+          <div class="t-title">${item.content}</div>
+          ${item.note ? `<div class="t-note">${item.note}</div>` : ''}
+          ${item.url ? `<a class="t-map" href="${item.url}" target="_blank">地圖 ↗</a>` : `<a class="t-map" href="https://www.google.com/maps/search/?q=${encodeURIComponent(item.content)}" target="_blank">地圖 ↗</a>`}
+        </div>
+      </div>`;
+    });
+  }
+  html += '</div>';
+
+  // Info cards
+  html += '<div class="info-cards">';
+  if (d.lunch || d.dinner) {
+    html += card('今日餐食', `${d.lunch ? '午餐：' + d.lunch : ''}${d.lunch && d.dinner ? '<br>' : ''}${d.dinner ? '晚餐：' + d.dinner : ''}`);
+  }
+  if (d.transport) html += card('今日交通', d.transport);
+  html += card('雨備行程', d.rainBackup || '（尚未安排）');
+  if (d.notes.length) html += card('重要提醒', d.notes.join('<br>'));
+  if (d.hotel) html += card('今晚住宿', d.hotel);
+  html += '</div>';
+
+  document.getElementById('dayContent').innerHTML = html;
+}
+
+function card(title, body) {
+  return `<div class="info-card" onclick="toggleCard(this)">
+    <div class="info-card-header"><span class="info-card-title">${title}</span><span class="chevron">▼</span></div>
+    <div class="info-card-body">${body}</div>
+  </div>`;
+}
+
+function toggleCard(el) { el.classList.toggle('open'); }
+
+function selectDay(i) { activeDay = i; renderTabs(); renderDay(); }
+
+// ===== EDIT MODAL =====
+function openModal() {
+  setMode('full', document.querySelector('.mode-btn'));
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+function setMode(mode, btn) {
+  editMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const ui = document.getElementById('modeUI');
+  if (mode === 'full') {
+    ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">貼上完整行程文字，系統會自動比對差異</p>
+      <textarea class="textarea" id="editText" placeholder="貼上完整行程...">${rawText}</textarea>`;
+  } else if (mode === 'add') {
+    ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">新增一行到指定日期</p>
+      <div class="input-row">
+        <select class="input-field" id="addDay" style="max-width:120px">${days.map((d,i)=>`<option value="${i}">${d.date}</option>`).join('')}</select>
+        <input class="input-field" id="addTime" placeholder="時間 如 14:00" style="max-width:100px">
+      </div>
+      <input class="input-field" id="addContent" placeholder="活動內容" style="width:100%;margin-bottom:8px">
+      <input class="input-field" id="addUrl" placeholder="地圖連結（選填）" style="width:100%">`;
+  } else {
+    ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">選擇要刪除的行程</p>
+      <select class="input-field" id="delDay" onchange="updateDelItems()" style="width:100%;margin-bottom:8px">${days.map((d,i)=>`<option value="${i}">${d.date} ${d.title}</option>`).join('')}</select>
+      <select class="input-field" id="delItem" style="width:100%"></select>`;
+    updateDelItems();
+  }
+}
+
+function updateDelItems() {
+  const di = parseInt(document.getElementById('delDay').value);
+  const sel = document.getElementById('delItem');
+  if (!sel) return;
+  sel.innerHTML = days[di].items.map((item, i) => `<option value="${i}">${item.time} ${item.content}</option>`).join('') || '<option>（無行程）</option>';
+}
+
+function applyEdit() {
+  if (editMode === 'full') {
+    const newText = document.getElementById('editText').value.trim();
+    if (!newText) return;
+    rawText = newText;
+    localStorage.setItem('italyRaw', rawText);
+    days = parseItinerary(rawText);
+    activeDay = Math.min(activeDay, days.length - 1);
+  } else if (editMode === 'add') {
+    const di = parseInt(document.getElementById('addDay').value);
+    const time = document.getElementById('addTime').value.trim();
+    const content = document.getElementById('addContent').value.trim();
+    const url = document.getElementById('addUrl').value.trim();
+    if (!content) return;
+    let type = 'sight';
+    if (/搭|高鐵|火車|公車|飛機/.test(content)) type = 'transport';
+    else if (/午餐|晚餐|早餐|吃/.test(content)) type = 'meal';
+    else if (/飯店|住宿/.test(content)) type = 'hotel';
+    const newItem = { time: time || '待定', content, type, url: url || null };
+    const items = days[di].items;
+    if (time) {
+      let idx = items.findIndex(it => it.time > time);
+      if (idx === -1) idx = items.length;
+      items.splice(idx, 0, newItem);
+    } else {
+      items.push(newItem);
+    }
+    // Rebuild rawText
+    rawText = rebuildText();
+    localStorage.setItem('italyRaw', rawText);
+  } else {
+    const di = parseInt(document.getElementById('delDay').value);
+    const ii = parseInt(document.getElementById('delItem').value);
+    days[di].items.splice(ii, 1);
+    rawText = rebuildText();
+    localStorage.setItem('italyRaw', rawText);
+  }
+  closeModal();
+  renderTabs();
+  renderDay();
+}
+
+function rebuildText() {
+  return days.map(d => {
+    let out = `${d.date}${d.weekday ? ' (' + d.weekday + ')' : ''} ${d.title}\n`;
+    d.items.forEach(item => {
+      out += `${item.time} ${item.content}\n`;
+      if (item.note) out += `>${item.note}\n`;
+      if (item.url) out += `${item.url}\n`;
+    });
+    if (d.lunch) out += `午餐：${d.lunch}\n`;
+    if (d.dinner) out += `晚餐：${d.dinner}\n`;
+    if (d.transport) out += `交通：${d.transport}\n`;
+    if (d.hotel) out += `住宿：${d.hotel}\n`;
+    if (d.rainBackup) out += `雨備：${d.rainBackup}\n`;
+    d.notes.forEach(n => out += `提醒：${n}\n`);
+    return out;
+  }).join('\n');
+}
+
+// ===== INIT =====
+renderTabs();
+renderDay();
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
