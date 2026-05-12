@@ -1,146 +1,570 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#5C3D2E">
-<title>義大利行程</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Serif TC',Georgia,serif;background:#F5EFE6;color:#3B2A1A;min-height:100vh;max-width:480px;margin:0 auto}
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#5C3D2E">
+  <title>義大利行程</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-/* Header */
-.header{background:#3B2A1A;color:#F5EFE6;padding:16px 20px 12px;position:sticky;top:0;z-index:100}
-.header h1{font-size:20px;font-weight:700;letter-spacing:2px}
-.header p{font-size:12px;opacity:.7;margin-top:2px}
-.header-row{display:flex;justify-content:space-between;align-items:center}
-.edit-btn{background:#C9A96E;color:#3B2A1A;border:none;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer}
+    body {
+      font-family: 'Noto Serif TC', Georgia, serif;
+      background: #F5EFE6;
+      color: #3B2A1A;
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto
+    }
 
-/* Day tabs */
-.day-tabs{display:flex;overflow-x:auto;gap:8px;padding:14px 16px;background:#EDE0CF;scrollbar-width:none}
-.day-tabs::-webkit-scrollbar{display:none}
-.day-tab{flex:0 0 auto;background:#fff;border-radius:14px;padding:10px 14px;text-align:center;cursor:pointer;transition:.2s;border:2px solid transparent;min-width:70px}
-.day-tab.active{background:#3B2A1A;color:#F5EFE6;border-color:#3B2A1A}
-.day-tab .dn{font-size:11px;opacity:.6;margin-bottom:2px}
-.day-tab .date{font-size:18px;font-weight:700}
-.day-tab .city{font-size:11px;margin-top:2px}
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap');
 
-/* Day title */
-.day-title{padding:16px 20px 8px;display:flex;align-items:center;gap:10px}
-.day-badge{background:#3B2A1A;color:#F5EFE6;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
-.day-name{font-size:18px;font-weight:700}
+    /* Header */
+    .header {
+      background: #3B2A1A;
+      color: #F5EFE6;
+      padding: 16px 20px 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
 
-/* Timeline */
-.timeline{padding:0 20px 20px}
-.t-item{display:flex;gap:12px;margin-bottom:4px}
-.t-left{display:flex;flex-direction:column;align-items:center;min-width:52px}
-.t-time{font-size:14px;font-weight:700;color:#5C3D2E;white-space:nowrap}
-.t-line-wrap{position:relative;flex:1;display:flex;align-items:center;justify-content:center;margin-top:4px}
-.t-line{position:absolute;top:0;bottom:0;width:2px;background:#D4B896;min-height:32px}
-.t-duration{position:relative;z-index:1;font-size:10px;color:#A09080;background:#F5EFE6;padding:1px 6px;border-radius:10px;white-space:nowrap;border:1px solid #E0D4C4}
-.t-right{flex:1;background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.t-title{font-size:16px;font-weight:700;line-height:1.3}
-.t-note{font-size:13px;color:#7A6350;margin-top:4px;line-height:1.5}
-.t-map{display:inline-block;margin-top:8px;background:#EDE0CF;color:#5C3D2E;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:inherit}
-.t-map-auto{background:#E8E4DF;color:#A89880;border:1.5px dashed #C8C0B8;}
-.t-route{display:inline-block;margin-top:8px;margin-left:6px;background:#E8F0E8;color:#5C7A5C;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;text-decoration:none}
-.t-type-transport .t-right{border-left:4px solid #8BACC8}
-.t-type-meal .t-right{border-left:4px solid #C8A87A}
-.t-type-hotel .t-right{border-left:4px solid #A8C8A0}
-.t-type-sight .t-right{border-left:4px solid #C8A0B8}
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px
+    }
 
-/* Info cards */
-.info-cards{padding:0 20px 20px}
-.info-card{background:#fff;border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.info-card-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.info-card-title{font-size:15px;font-weight:700}
-.info-card-body{padding:0 16px 12px;font-size:14px;color:#5C3D2E;line-height:1.7;display:none}
-.info-card.open .info-card-body{display:block}
-.chevron{transition:.2s;font-size:12px}
-.info-card.open .chevron{transform:rotate(180deg)}
+    .header p {
+      font-size: 12px;
+      opacity: .7;
+      margin-top: 2px
+    }
 
-/* Edit modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end}
-.modal-overlay.open{display:flex}
-.modal{background:#F5EFE6;border-radius:24px 24px 0 0;padding:24px 20px;width:100%;max-height:90vh;overflow-y:auto}
-.modal h2{font-size:18px;font-weight:700;margin-bottom:16px}
-.mode-btns{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.mode-btn{flex:1;min-width:120px;padding:10px;border:2px solid #D4B896;border-radius:12px;background:#fff;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
-.mode-btn.active{background:#3B2A1A;color:#F5EFE6;border-color:#3B2A1A}
-.textarea{width:100%;min-height:180px;border:2px solid #D4B896;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;background:#fff;resize:vertical}
-.input-row{display:flex;gap:8px;margin-bottom:12px}
-.input-field{flex:1;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff}
-.modal-btns{display:flex;gap:10px;margin-top:14px}
-.btn-cancel{flex:1;padding:13px;border:2px solid #D4B896;border-radius:14px;background:#fff;font-size:15px;font-weight:700;cursor:pointer}
-.btn-save{flex:2;padding:13px;border:none;border-radius:14px;background:#3B2A1A;color:#F5EFE6;font-size:15px;font-weight:700;cursor:pointer}
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
 
-/* Diff */
-.diff-add{background:#d4f5d4;border-radius:6px;padding:2px 6px}
-.diff-del{background:#f5d4d4;text-decoration:line-through;border-radius:6px;padding:2px 6px;color:#888}
+    .edit-btn {
+      background: #C9A96E;
+      color: #3B2A1A;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer
+    }
 
-/* Helpers */
-.empty{text-align:center;color:#A89080;padding:40px 20px;font-size:15px}
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(245,239,230,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px}
-.loading-spinner{width:36px;height:36px;border:3px solid #D4B896;border-top-color:#3B2A1A;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:14px;color:#5C3D2E;font-weight:700}
-.sync-btn{background:transparent;color:#F5EFE6;border:1.5px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-right:6px}
-</style>
+    /* Day tabs */
+    .day-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 14px 16px;
+      background: #EDE0CF;
+      scrollbar-width: none
+    }
+
+    .day-tabs::-webkit-scrollbar {
+      display: none
+    }
+
+    .day-tab {
+      flex: 0 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: .2s;
+      border: 2px solid transparent;
+      min-width: 70px
+    }
+
+    .day-tab.active {
+      background: #3B2A1A;
+      color: #F5EFE6;
+      border-color: #3B2A1A
+    }
+
+    .day-tab .dn {
+      font-size: 11px;
+      opacity: .6;
+      margin-bottom: 2px
+    }
+
+    .day-tab .date {
+      font-size: 18px;
+      font-weight: 700
+    }
+
+    .day-tab .city {
+      font-size: 11px;
+      margin-top: 2px
+    }
+
+    /* Day title */
+    .day-title {
+      padding: 16px 20px 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .day-badge {
+      background: #3B2A1A;
+      color: #F5EFE6;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700
+    }
+
+    .day-name {
+      font-size: 18px;
+      font-weight: 700
+    }
+
+    /* Timeline */
+    .timeline {
+      padding: 0 20px 20px
+    }
+
+    .t-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 4px
+    }
+
+    .t-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 52px
+    }
+
+    .t-time {
+      font-size: 14px;
+      font-weight: 700;
+      color: #5C3D2E;
+      white-space: nowrap
+    }
+
+    .t-line-wrap {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px
+    }
+
+    .t-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #D4B896;
+      min-height: 32px
+    }
+
+    .t-duration {
+      position: relative;
+      z-index: 1;
+      font-size: 10px;
+      color: #A09080;
+      background: #F5EFE6;
+      padding: 1px 6px;
+      border-radius: 10px;
+      white-space: nowrap;
+      border: 1px solid #E0D4C4
+    }
+
+    .t-right {
+      flex: 1;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06)
+    }
+
+    .t-title {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3
+    }
+
+    .t-note {
+      font-size: 13px;
+      color: #7A6350;
+      margin-top: 4px;
+      line-height: 1.5
+    }
+
+    .t-map {
+      display: inline-block;
+      margin-top: 8px;
+      background: #EDE0CF;
+      color: #5C3D2E;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit
+    }
+
+    .t-map-auto {
+      background: #E8E4DF;
+      color: #A89880;
+      border: 1.5px dashed #C8C0B8;
+    }
+
+    .t-route {
+      display: inline-block;
+      margin-top: 8px;
+      margin-left: 6px;
+      background: #E8F0E8;
+      color: #5C7A5C;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none
+    }
+
+    .t-type-transport .t-right {
+      border-left: 4px solid #8BACC8
+    }
+
+    .t-type-meal .t-right {
+      border-left: 4px solid #C8A87A
+    }
+
+    .t-type-hotel .t-right {
+      border-left: 4px solid #A8C8A0
+    }
+
+    .t-type-sight .t-right {
+      border-left: 4px solid #C8A0B8
+    }
+
+    /* Info cards */
+    .info-cards {
+      padding: 0 20px 20px
+    }
+
+    .info-card {
+      background: #fff;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06)
+    }
+
+    .info-card-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer
+    }
+
+    .info-card-title {
+      font-size: 15px;
+      font-weight: 700
+    }
+
+    .info-card-body {
+      padding: 0 16px 12px;
+      font-size: 14px;
+      color: #5C3D2E;
+      line-height: 1.7;
+      display: none
+    }
+
+    .info-card.open .info-card-body {
+      display: block
+    }
+
+    .chevron {
+      transition: .2s;
+      font-size: 12px
+    }
+
+    .info-card.open .chevron {
+      transform: rotate(180deg)
+    }
+
+    /* Edit modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 200;
+      align-items: flex-end
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: #F5EFE6;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px
+    }
+
+    .mode-btns {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap
+    }
+
+    .mode-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px;
+      border: 2px solid #D4B896;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center
+    }
+
+    .mode-btn.active {
+      background: #3B2A1A;
+      color: #F5EFE6;
+      border-color: #3B2A1A
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 180px;
+      border: 2px solid #D4B896;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      resize: vertical
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px
+    }
+
+    .input-field {
+      flex: 1;
+      border: 2px solid #D4B896;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 13px;
+      border: 2px solid #D4B896;
+      border-radius: 14px;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .btn-save {
+      flex: 2;
+      padding: 13px;
+      border: none;
+      border-radius: 14px;
+      background: #3B2A1A;
+      color: #F5EFE6;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    /* Diff */
+    .diff-add {
+      background: #d4f5d4;
+      border-radius: 6px;
+      padding: 2px 6px
+    }
+
+    .diff-del {
+      background: #f5d4d4;
+      text-decoration: line-through;
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: #888
+    }
+
+    /* Helpers */
+    .empty {
+      text-align: center;
+      color: #A89080;
+      padding: 40px 20px;
+      font-size: 15px
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(245, 239, 230, .9);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .loading-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #D4B896;
+      border-top-color: #3B2A1A;
+      border-radius: 50%;
+      animation: spin .8s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .loading-text {
+      font-size: 14px;
+      color: #5C3D2E;
+      font-weight: 700
+    }
+
+    .sync-btn {
+      background: transparent;
+      color: #F5EFE6;
+      border: 1.5px solid rgba(255, 255, 255, .4);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 6px
+    }
+  .t-route-time{font-size:11px;color:#5C8A5C;margin-top:5px;font-weight:600;line-height:1.5}
+  </style>
 </head>
+
 <body>
 
-<div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div><div class="loading-text" id="loadingText">載入行程中...</div></div>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">載入行程中...</div>
+  </div>
 
-<div class="header">
-  <div class="header-row">
-    <div>
-      <p>Buon Viaggio · 2025</p>
-      <h1>義大利 10 日</h1>
-    </div>
-    <div style="display:flex;align-items:center">
-      <button class="sync-btn" onclick="syncFromCloud()" title="重新整理">↻ 同步</button>
-      <button class="edit-btn" onclick="openModal()">編輯行程</button>
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <p>Buon Viaggio · 2025</p>
+        <h1>義大利 10 日</h1>
+      </div>
+      <div style="display:flex;align-items:center">
+        <button class="sync-btn" onclick="syncFromCloud()" title="重新整理">↻ 同步</button>
+        <button class="edit-btn" onclick="openModal()">編輯行程</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="day-tabs" id="dayTabs"></div>
+  <div class="day-tabs" id="dayTabs"></div>
 
-<div id="dayContent"></div>
+  <div id="dayContent"></div>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h2>編輯行程</h2>
-    <div class="mode-btns">
-      <button class="mode-btn active" onclick="setMode('full',this)">全部重貼</button>
-      <button class="mode-btn" onclick="setMode('add',this)">新增一行</button>
-      <button class="mode-btn" onclick="setMode('del',this)">刪除一行</button>
-    </div>
-    <div id="modeUI"></div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">取消</button>
-      <button class="btn-save" onclick="applyEdit()">確認</button>
-    </div>
-  </div>
-</div>
-
-<div id="mapModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:250;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#F5EFE6;border-radius:20px;padding:24px;width:100%;max-width:360px">
-    <p style="font-size:16px;font-weight:700;margin-bottom:4px">貼上 Google Maps 連結</p>
-    <p style="font-size:12px;color:#A89080;margin-bottom:12px">Google Maps 分享 → 複製連結 → 貼在這裡（長按現有地圖可修改）</p>
-    <input id="mapUrlInput" type="url" placeholder="https://maps.app.goo.gl/..." style="width:100%;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:14px;box-sizing:border-box">
-    <div style="display:flex;gap:10px">
-      <button onclick="cancelMapEdit()" style="flex:1;padding:12px;border:2px solid #D4B896;border-radius:14px;background:#fff;font-size:14px;font-weight:700;cursor:pointer">取消</button>
-      <button onclick="confirmMapEdit()" style="flex:2;padding:12px;border:none;border-radius:14px;background:#3B2A1A;color:#F5EFE6;font-size:14px;font-weight:700;cursor:pointer">確認</button>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2>編輯行程</h2>
+      <div class="mode-btns">
+        <button class="mode-btn active" onclick="setMode('full',this)">全部重貼</button>
+        <button class="mode-btn" onclick="setMode('add',this)">新增一行</button>
+        <button class="mode-btn" onclick="setMode('del',this)">刪除一行</button>
+      </div>
+      <div id="modeUI"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal()">取消</button>
+        <button class="btn-save" onclick="applyEdit()">確認</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-// ===== RAW ITINERARY DATA =====
-const DEFAULT_TEXT = `6/21 (六) 羅馬：抵達與市區適應
+  <div id="mapModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:250;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#F5EFE6;border-radius:20px;padding:24px;width:100%;max-width:360px">
+      <p style="font-size:16px;font-weight:700;margin-bottom:4px">貼上 Google Maps 連結</p>
+      <p style="font-size:12px;color:#A89080;margin-bottom:8px">Google Maps 分享 → 複製連結 → 貼這裡（長按現有地圖可修改）</p>
+      <input id="mapUrlInput" type="url" placeholder="https://maps.app.goo.gl/..." style="width:100%;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:8px;box-sizing:border-box">
+      <p style="font-size:12px;color:#A89080;margin-bottom:4px">查路線用地名（選填，沒填會用行程文字）</p>
+      <input id="mapPlaceName" type="text" placeholder="例如：Colosseum, Rome" style="width:100%;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:14px;box-sizing:border-box">
+      <div style="display:flex;gap:10px">
+        <button onclick="cancelMapEdit()" style="flex:1;padding:12px;border:2px solid #D4B896;border-radius:14px;background:#fff;font-size:14px;font-weight:700;cursor:pointer">取消</button>
+        <button onclick="confirmMapEdit()" style="flex:2;padding:12px;border:none;border-radius:14px;background:#3B2A1A;color:#F5EFE6;font-size:14px;font-weight:700;cursor:pointer">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="routeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:250;align-items:flex-end">
+    <div style="background:#F5EFE6;border-radius:24px 24px 0 0;padding:24px 20px;width:100%">
+      <p style="font-size:15px;font-weight:700;margin-bottom:4px">記錄交通時間</p>
+      <p style="font-size:12px;color:#A89080;margin-bottom:14px">在 Google Maps 查到後填入（沒有的留空）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div><label style="font-size:12px;color:#7A6350;display:block;margin-bottom:4px">公車 (min)</label><input id="rt-bus" type="number" placeholder="分鐘" style="width:100%;border:2px solid #D4B896;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;background:#fff;box-sizing:border-box"></div>
+        <div><label style="font-size:12px;color:#7A6350;display:block;margin-bottom:4px">走路 (min)</label><input id="rt-walk" type="number" placeholder="分鐘" style="width:100%;border:2px solid #D4B896;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;background:#fff;box-sizing:border-box"></div>
+        <div><label style="font-size:12px;color:#7A6350;display:block;margin-bottom:4px">地鐵 (min)</label><input id="rt-metro" type="number" placeholder="分鐘" style="width:100%;border:2px solid #D4B896;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;background:#fff;box-sizing:border-box"></div>
+        <div><label style="font-size:12px;color:#7A6350;display:block;margin-bottom:4px">私鐵 (min)</label><input id="rt-train" type="number" placeholder="分鐘" style="width:100%;border:2px solid #D4B896;border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;background:#fff;box-sizing:border-box"></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onclick="cancelRouteTime()" style="flex:1;padding:12px;border:2px solid #D4B896;border-radius:14px;background:#fff;font-size:14px;font-weight:700;cursor:pointer">關閉</button>
+        <button onclick="saveRouteTime()" style="flex:2;padding:12px;border:none;border-radius:14px;background:#3B2A1A;color:#F5EFE6;font-size:14px;font-weight:700;cursor:pointer">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== RAW ITINERARY DATA =====
+    const DEFAULT_TEXT = `6/21 (六) 羅馬：抵達與市區適應
 09:20 抵達羅馬 FCO 機場
 11:30 抵達羅馬中央車站 Termini 飯店寄物
 13:00 遊玩：西班牙階梯、許願池、萬神殿 步行為主
@@ -213,378 +637,434 @@ const DEFAULT_TEXT = `6/21 (六) 羅馬：抵達與市區適應
 17:40 抵達 MXP 機場辦理登機
 19:45 飛機起飛`;
 
-// ===== PARSER =====
-function parseItinerary(text) {
-  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-  const days = [];
-  let cur = null;
+    // ===== PARSER =====
+    function parseItinerary(text) {
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      const days = [];
+      let cur = null;
 
-  for (const line of lines) {
-    // Date line
-    if (/^\d+\/\d+/.test(line)) {
-      const m = line.match(/^(\d+\/\d+)\s*[（(]([^）)]+)[）)]?\s*(.*)/);
-      if (m) {
-        cur = { date: m[1], weekday: m[2], title: m[3] || '', items: [], hotel: '', lunch: '', dinner: '', transport: '', notes: [], rainBackup: '' };
-      } else {
-        cur = { date: line.match(/^(\d+\/\d+)/)[1], weekday: '', title: line.replace(/^\d+\/\d+\s*/, ''), items: [], hotel: '', lunch: '', dinner: '', transport: '', notes: [], rainBackup: '' };
+      for (const line of lines) {
+        // Date line
+        if (/^\d+\/\d+/.test(line)) {
+          const m = line.match(/^(\d+\/\d+)\s*[（(]([^）)]+)[）)]?\s*(.*)/);
+          if (m) {
+            cur = { date: m[1], weekday: m[2], title: m[3] || '', items: [], hotel: '', lunch: '', dinner: '', transport: '', notes: [], rainBackup: '' };
+          } else {
+            cur = { date: line.match(/^(\d+\/\d+)/)[1], weekday: '', title: line.replace(/^\d+\/\d+\s*/, ''), items: [], hotel: '', lunch: '', dinner: '', transport: '', notes: [], rainBackup: '' };
+          }
+          days.push(cur);
+          continue;
+        }
+        if (!cur) continue;
+
+        // Special fields
+        if (line.startsWith('住宿：') || line.startsWith('住宿:')) { cur.hotel = line.replace(/^住宿[：:]/, ''); continue; }
+        if (line.startsWith('午餐：') || line.startsWith('午餐:')) { cur.lunch = line.replace(/^午餐[：:]/, ''); continue; }
+        if (line.startsWith('晚餐：') || line.startsWith('晚餐:')) { cur.dinner = line.replace(/^晚餐[：:]/, ''); continue; }
+        if (line.startsWith('交通：') || line.startsWith('交通:')) { cur.transport = line.replace(/^交通[：:]/, ''); continue; }
+        if (line.startsWith('提醒：') || line.startsWith('提醒:')) { cur.notes.push(line.replace(/^提醒[：:]/, '')); continue; }
+        if (line.startsWith('備註：') || line.startsWith('備註:')) { cur.notes.push(line.replace(/^備註[：:]/, '')); continue; }
+        if (line.startsWith('雨備：') || line.startsWith('雨備:')) { cur.rainBackup = line.replace(/^雨備[：:]/, ''); continue; }
+        if ((line.startsWith('地名：') || line.startsWith('地名:')) && cur.items.length) { cur.items[cur.items.length-1].placeName = line.replace(/^地名[：:]/, ''); continue; }
+        if ((line.startsWith('路線時間：') || line.startsWith('路線時間:')) && cur.items.length) {
+          const last = cur.items[cur.items.length-1]; const rt = line.replace(/^路線時間[：:]/, '');
+          last.routeTime = {};
+          const bM=rt.match(/公車(\d+)min/); if(bM) last.routeTime.bus=+bM[1];
+          const wM=rt.match(/走路(\d+)min/); if(wM) last.routeTime.walk=+wM[1];
+          const mM=rt.match(/地鐵(\d+)min/); if(mM) last.routeTime.metro=+mM[1];
+          const tM=rt.match(/私鐵(\d+)min/); if(tM) last.routeTime.train=+tM[1];
+          continue;
+        }
+
+        // Time item
+        const tm = line.match(/^(\d{1,2}:\d{2})\s+(.*)/);
+        if (tm) {
+          const content = tm[2];
+          let type = 'sight';
+          if (/搭|高鐵|火車|公車|飛機|機場|轉|郵輪|船/.test(content)) type = 'transport';
+          else if (/午餐|晚餐|早餐|餐廳|吃/.test(content)) type = 'meal';
+          else if (/飯店|住宿|入住|寄物|退房/.test(content)) type = 'hotel';
+
+          const urlMatch = content.match(/https?:\/\/[^\s]+/);
+          cur.items.push({ time: tm[1], content: content.replace(/https?:\/\/[^\s]+/g, '').trim(), type, url: urlMatch ? urlMatch[0] : null, placeName: null, routeTime: null });
+          continue;
+        }
+
+        // Sub-note
+        if (line.startsWith('>')) {
+          if (cur.items.length) {
+            const last = cur.items[cur.items.length - 1];
+            last.note = (last.note ? last.note + ' · ' : '') + line.slice(1).trim();
+            const urlMatch = line.match(/https?:\/\/[^\s]+/);
+            if (urlMatch && !last.url) last.url = urlMatch[0];
+          }
+          continue;
+        }
+
+        // Standalone URL
+        if (/^https?:\/\//.test(line)) {
+          if (cur.items.length) cur.items[cur.items.length - 1].url = cur.items[cur.items.length - 1].url || line;
+          continue;
+        }
       }
-      days.push(cur);
-      continue;
-    }
-    if (!cur) continue;
-
-    // Special fields
-    if (line.startsWith('住宿：') || line.startsWith('住宿:')) { cur.hotel = line.replace(/^住宿[：:]/, ''); continue; }
-    if (line.startsWith('午餐：') || line.startsWith('午餐:')) { cur.lunch = line.replace(/^午餐[：:]/, ''); continue; }
-    if (line.startsWith('晚餐：') || line.startsWith('晚餐:')) { cur.dinner = line.replace(/^晚餐[：:]/, ''); continue; }
-    if (line.startsWith('交通：') || line.startsWith('交通:')) { cur.transport = line.replace(/^交通[：:]/, ''); continue; }
-    if (line.startsWith('提醒：') || line.startsWith('提醒:')) { cur.notes.push(line.replace(/^提醒[：:]/, '')); continue; }
-    if (line.startsWith('備註：') || line.startsWith('備註:')) { cur.notes.push(line.replace(/^備註[：:]/, '')); continue; }
-    if (line.startsWith('雨備：') || line.startsWith('雨備:')) { cur.rainBackup = line.replace(/^雨備[：:]/, ''); continue; }
-
-    // Time item
-    const tm = line.match(/^(\d{1,2}:\d{2})\s+(.*)/);
-    if (tm) {
-      const content = tm[2];
-      let type = 'sight';
-      if (/搭|高鐵|火車|公車|飛機|機場|轉|郵輪|船/.test(content)) type = 'transport';
-      else if (/午餐|晚餐|早餐|餐廳|吃/.test(content)) type = 'meal';
-      else if (/飯店|住宿|入住|寄物|退房/.test(content)) type = 'hotel';
-
-      const urlMatch = content.match(/https?:\/\/[^\s]+/);
-      cur.items.push({ time: tm[1], content: content.replace(/https?:\/\/[^\s]+/g, '').trim(), type, url: urlMatch ? urlMatch[0] : null });
-      continue;
+      return days;
     }
 
-    // Sub-note
-    if (line.startsWith('>')) {
-      if (cur.items.length) {
-        const last = cur.items[cur.items.length - 1];
-        last.note = (last.note ? last.note + ' · ' : '') + line.slice(1).trim();
-        const urlMatch = line.match(/https?:\/\/[^\s]+/);
-        if (urlMatch && !last.url) last.url = urlMatch[0];
+    // ===== CLOUD SYNC =====
+    const CLOUD_KEY = '$2a$10$riKxBidaZMDmkFs16huJA.1vC2u4DcoOnmFweiIx51N/jtkGmeuri';
+    const CLOUD_BIN = '6a02cb50c0954111d80ebe47';
+    const CLOUD_URL = `https://api.jsonbin.io/v3/b/${CLOUD_BIN}`;
+
+    function showLoading(show, msg) {
+      document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+      if (msg) document.getElementById('loadingText').textContent = msg;
+    }
+
+    async function loadFromCloud() {
+      showLoading(true, '載入行程中...');
+      try {
+        const res = await fetch(`${CLOUD_URL}/latest`, { headers: { 'X-Master-Key': CLOUD_KEY } });
+        const data = await res.json();
+        const raw = data.record?.raw;
+        if (raw && raw.trim()) {
+          rawText = raw;
+          localStorage.setItem('italyRaw', raw);
+        } else {
+          rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
+          await saveToCloud(rawText, false);
+        }
+      } catch (e) {
+        rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
       }
-      continue;
-    }
-
-    // Standalone URL
-    if (/^https?:\/\//.test(line)) {
-      if (cur.items.length) cur.items[cur.items.length - 1].url = cur.items[cur.items.length - 1].url || line;
-      continue;
-    }
-  }
-  return days;
-}
-
-// ===== CLOUD SYNC =====
-const CLOUD_KEY = '$2a$10$riKxBidaZMDmkFs16huJA.1vC2u4DcoOnmFweiIx51N/jtkGmeuri';
-const CLOUD_BIN = '6a02cb50c0954111d80ebe47';
-const CLOUD_URL = `https://api.jsonbin.io/v3/b/${CLOUD_BIN}`;
-
-function showLoading(show, msg) {
-  document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
-  if (msg) document.getElementById('loadingText').textContent = msg;
-}
-
-async function loadFromCloud() {
-  showLoading(true, '載入行程中...');
-  try {
-    const res = await fetch(`${CLOUD_URL}/latest`, { headers: {'X-Master-Key': CLOUD_KEY} });
-    const data = await res.json();
-    const raw = data.record?.raw;
-    if (raw && raw.trim()) {
-      rawText = raw;
-      localStorage.setItem('italyRaw', raw);
-    } else {
-      rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
-      await saveToCloud(rawText, false);
-    }
-  } catch(e) {
-    rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
-  }
-  days = parseItinerary(rawText);
-  showLoading(false);
-  renderTabs();
-  renderDay();
-}
-
-async function syncFromCloud() {
-  showLoading(true, '同步中...');
-  try {
-    const res = await fetch(`${CLOUD_URL}/latest`, { headers: {'X-Master-Key': CLOUD_KEY} });
-    const data = await res.json();
-    const raw = data.record?.raw;
-    if (raw && raw.trim()) {
-      rawText = raw;
-      localStorage.setItem('italyRaw', raw);
       days = parseItinerary(rawText);
+      showLoading(false);
+      renderTabs();
+      renderDay();
     }
-  } catch(e) { }
-  showLoading(false);
-  renderTabs();
-  renderDay();
-}
 
-async function saveToCloud(text, showFeedback = true) {
-  localStorage.setItem('italyRaw', text);
-  if (showFeedback) showLoading(true, '儲存中...');
-  try {
-    await fetch(CLOUD_URL, {
-      method: 'PUT',
-      headers: {'Content-Type':'application/json','X-Master-Key': CLOUD_KEY},
-      body: JSON.stringify({raw: text})
-    });
-  } catch(e) {
-    alert('雲端儲存失敗，資料已暫存在本機');
-  }
-  if (showFeedback) showLoading(false);
-}
+    async function syncFromCloud() {
+      showLoading(true, '同步中...');
+      try {
+        const res = await fetch(`${CLOUD_URL}/latest`, { headers: { 'X-Master-Key': CLOUD_KEY } });
+        const data = await res.json();
+        const raw = data.record?.raw;
+        if (raw && raw.trim()) {
+          rawText = raw;
+          localStorage.setItem('italyRaw', raw);
+          days = parseItinerary(rawText);
+        }
+      } catch (e) { }
+      showLoading(false);
+      renderTabs();
+      renderDay();
+    }
 
-// ===== STATE =====
-let rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
-let days = [];
-let activeDay = 0;
-let editMode = 'full';
+    async function saveToCloud(text, showFeedback = true) {
+      localStorage.setItem('italyRaw', text);
+      if (showFeedback) showLoading(true, '儲存中...');
+      try {
+        await fetch(CLOUD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_KEY },
+          body: JSON.stringify({ raw: text })
+        });
+      } catch (e) {
+        alert('雲端儲存失敗，資料已暫存在本機');
+      }
+      if (showFeedback) showLoading(false);
+    }
 
-// ===== RENDER =====
-function renderTabs() {
-  const el = document.getElementById('dayTabs');
-  el.innerHTML = days.map((d, i) => `
+    // ===== STATE =====
+    let rawText = localStorage.getItem('italyRaw') || DEFAULT_TEXT;
+    let days = [];
+    let activeDay = 0;
+    let editMode = 'full';
+
+    // ===== RENDER =====
+    function renderTabs() {
+      const el = document.getElementById('dayTabs');
+      el.innerHTML = days.map((d, i) => `
     <div class="day-tab ${i === activeDay ? 'active' : ''}" onclick="selectDay(${i})">
       <div class="dn">D${i + 1}</div>
       <div class="date">${d.date}</div>
       <div class="city">${getCityShort(d)}</div>
     </div>`).join('');
-  setTimeout(() => el.children[activeDay]?.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
-}
+      setTimeout(() => el.children[activeDay]?.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
+    }
 
-const DATE_CITY = {'6/21':'羅馬','6/22':'羅馬','6/23':'羅馬','6/24':'南義','6/25':'卡布里','6/26':'龐貝','6/27':'佛羅倫斯','6/28':'佛羅倫斯','6/29':'威尼斯','6/30':'米蘭'};
-function getCityShort(d) {
-  if (d.city) return d.city;
-  if (DATE_CITY[d.date]) return DATE_CITY[d.date];
-  const t = d.title || '';
-  if (t.includes('卡布里')) return '卡布里';
-  if (t.includes('龐貝')) return '龐貝';
-  if (t.includes('南義')) return '南義';
-  if (t.includes('佛羅倫斯')) return '佛羅倫斯';
-  if (t.includes('威尼斯')) return '威尼斯';
-  if (t.includes('米蘭')) return '米蘭';
-  if (t.includes('羅馬')) return '羅馬';
-  return d.date;
-}
+    const DATE_CITY = { '6/21': '羅馬', '6/22': '羅馬', '6/23': '羅馬', '6/24': '南義', '6/25': '卡布里', '6/26': '龐貝', '6/27': '佛羅倫斯', '6/28': '佛羅倫斯', '6/29': '威尼斯', '6/30': '米蘭' };
+    function getCityShort(d) {
+      if (d.city) return d.city;
+      if (DATE_CITY[d.date]) return DATE_CITY[d.date];
+      const t = d.title || '';
+      if (t.includes('卡布里')) return '卡布里';
+      if (t.includes('龐貝')) return '龐貝';
+      if (t.includes('南義')) return '南義';
+      if (t.includes('佛羅倫斯')) return '佛羅倫斯';
+      if (t.includes('威尼斯')) return '威尼斯';
+      if (t.includes('米蘭')) return '米蘭';
+      if (t.includes('羅馬')) return '羅馬';
+      return d.date;
+    }
 
-function timeDiff(t1, t2) {
-  const [h1,m1] = t1.split(':').map(Number);
-  const [h2,m2] = t2.split(':').map(Number);
-  const diff = (h2*60+m2)-(h1*60+m1);
-  if (diff<=0||isNaN(diff)) return null;
-  if (diff<60) return diff+'min';
-  const h = diff/60;
-  return (Number.isInteger(h)?h:h.toFixed(1))+'hr';
-}
+    function timeDiff(t1, t2) {
+      const [h1, m1] = t1.split(':').map(Number);
+      const [h2, m2] = t2.split(':').map(Number);
+      const diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+      if (diff <= 0 || isNaN(diff)) return null;
+      if (diff < 60) return diff + 'min';
+      const h = diff / 60;
+      return (Number.isInteger(h) ? h : h.toFixed(1)) + 'hr';
+    }
 
-function typeLabel(type) {
-  return { transport: '交通', meal: '餐食', hotel: '住宿', sight: '景點' }[type] || '';
-}
+    function typeLabel(type) {
+      return { transport: '交通', meal: '餐食', hotel: '住宿', sight: '景點' }[type] || '';
+    }
 
-function renderDay() {
-  const d = days[activeDay];
-  if (!d) return;
-  let html = `<div class="day-title"><span class="day-badge">第 ${activeDay + 1} 天</span><span class="day-name">${d.title}</span></div>`;
-  html += '<div class="timeline">';
-  if (!d.items.length) { html += '<div class="empty">暫無行程</div>'; }
-  else {
-    d.items.forEach((item, i) => {
-      const isLast = i === d.items.length - 1;
-      const next = isLast ? null : d.items[i+1];
-      const dur = next ? timeDiff(item.time, next.time) : null;
-      const nextWithUrl = item.url ? d.items.slice(i + 1).find(it => it.url) : null;
-      const routeUrl = nextWithUrl
-        ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(item.content)}&destination=${encodeURIComponent(nextWithUrl.content)}&travelmode=transit`
-        : null;
-      html += `<div class="t-item t-type-${item.type}">
+    function renderDay() {
+      const d = days[activeDay];
+      if (!d) return;
+      let html = `<div class="day-title"><span class="day-badge">第 ${activeDay + 1} 天</span><span class="day-name">${d.title}</span></div>`;
+      html += '<div class="timeline">';
+      if (!d.items.length) { html += '<div class="empty">暫無行程</div>'; }
+      else {
+        d.items.forEach((item, i) => {
+          const isLast = i === d.items.length - 1;
+          const next = isLast ? null : d.items[i + 1];
+          const dur = next ? timeDiff(item.time, next.time) : null;
+          const nextWithUrl = item.url ? d.items.slice(i+1).find(it => it.url) : null;
+          const rt = item.routeTime || {};
+          const rtParts = [rt.bus?`公車 ${rt.bus}min`:'', rt.walk?`走路 ${rt.walk}min`:'', rt.metro?`地鐵 ${rt.metro}min`:'', rt.train?`私鐵 ${rt.train}min`:''].filter(Boolean);
+          const rtDisplay = rtParts.length ? `<div class="t-route-time">【${rtParts.join(' / ')}】</div>` : '';
+          html += `<div class="t-item t-type-${item.type}">
         <div class="t-left">
           <div class="t-time">${item.time}</div>
-          ${!isLast ? `<div class="t-line-wrap"><div class="t-line"></div>${dur?`<div class="t-duration">${dur}</div>`:''}</div>` : ''}
+          ${!isLast ? `<div class="t-line-wrap"><div class="t-line"></div>${dur ? `<div class="t-duration">${dur}</div>` : ''}</div>` : ''}
         </div>
         <div class="t-right">
           <div class="t-title">${item.content}</div>
           ${item.note ? `<div class="t-note">${item.note}</div>` : ''}
           ${item.url
-            ? `<a class="t-map" href="${item.url}" target="_blank" ontouchstart="startMapLongPress(${activeDay},${i})" ontouchend="endMapLongPress()" ontouchmove="endMapLongPress()" oncontextmenu="openMapEdit(${activeDay},${i});return false;">地圖 ↗</a>`
-            : `<button class="t-map t-map-auto" onclick="openMapEdit(${activeDay},${i})">貼上地圖連結 +</button>`}
-          ${routeUrl ? `<a class="t-route" href="${routeUrl}" target="_blank">→ 查路線</a>` : ''}
+              ? `<a class="t-map" href="${item.url}" target="_blank" ontouchstart="startMapLongPress(${activeDay},${i})" ontouchend="endMapLongPress()" ontouchmove="endMapLongPress()" oncontextmenu="openMapEdit(${activeDay},${i});return false;">地圖 ↗</a>`
+              : `<button class="t-map t-map-auto" onclick="openMapEdit(${activeDay},${i})">貼上地圖連結 +</button>`}
+          ${nextWithUrl ? `<button class="t-route" onclick="clickRoute(${activeDay},${i})">→ 查路線</button>${rtDisplay}` : ''}
         </div>
       </div>`;
-    });
-  }
-  html += '</div>';
+        });
+      }
+      html += '</div>';
 
-  // Info cards
-  html += '<div class="info-cards">';
-  if (d.lunch || d.dinner) {
-    html += card('今日餐食', `${d.lunch ? '午餐：' + d.lunch : ''}${d.lunch && d.dinner ? '<br>' : ''}${d.dinner ? '晚餐：' + d.dinner : ''}`);
-  }
-  if (d.transport) html += card('今日交通', d.transport);
-  if (d.rainBackup) html += card('雨備行程', d.rainBackup);
-  if (d.notes.length) html += card('重要提醒', d.notes.join('<br>'));
-  if (d.hotel) html += card('今晚住宿', d.hotel);
-  html += '</div>';
+      // Info cards
+      html += '<div class="info-cards">';
+      if (d.lunch || d.dinner) {
+        html += card('今日餐食', `${d.lunch ? '午餐：' + d.lunch : ''}${d.lunch && d.dinner ? '<br>' : ''}${d.dinner ? '晚餐：' + d.dinner : ''}`);
+      }
+      if (d.transport) html += card('今日交通', d.transport);
+      if (d.rainBackup) html += card('雨備行程', d.rainBackup);
+      if (d.notes.length) html += card('重要提醒', d.notes.join('<br>'));
+      if (d.hotel) html += card('今晚住宿', d.hotel);
+      html += '</div>';
 
-  document.getElementById('dayContent').innerHTML = html;
-}
+      document.getElementById('dayContent').innerHTML = html;
+    }
 
-function card(title, body) {
-  return `<div class="info-card" onclick="toggleCard(this)">
+    function card(title, body) {
+      return `<div class="info-card" onclick="toggleCard(this)">
     <div class="info-card-header"><span class="info-card-title">${title}</span><span class="chevron">▼</span></div>
     <div class="info-card-body">${body}</div>
   </div>`;
-}
+    }
 
-function toggleCard(el) { el.classList.toggle('open'); }
+    function toggleCard(el) { el.classList.toggle('open'); }
 
-function selectDay(i) { activeDay = i; renderTabs(); renderDay(); }
+    function selectDay(i) { activeDay = i; renderTabs(); renderDay(); }
 
-// ===== MAP EDIT =====
-let mapEditTarget = null;
-let mapLongTimer = null;
+    // ===== MAP EDIT =====
+    let mapEditTarget = null;
+    let mapLongTimer = null;
 
-function openMapEdit(dayIdx, itemIdx) {
-  mapEditTarget = {dayIdx, itemIdx};
-  const item = days[dayIdx].items[itemIdx];
-  document.getElementById('mapUrlInput').value = item.url || '';
-  const modal = document.getElementById('mapModal');
-  modal.style.display = 'flex';
-  setTimeout(() => { const inp = document.getElementById('mapUrlInput'); inp.focus(); inp.select(); }, 150);
-}
+    function openMapEdit(dayIdx, itemIdx) {
+      mapEditTarget = { dayIdx, itemIdx };
+      const item = days[dayIdx].items[itemIdx];
+      document.getElementById('mapUrlInput').value = item.url || '';
+      document.getElementById('mapPlaceName').value = item.placeName || '';
+      document.getElementById('mapModal').style.display = 'flex';
+      setTimeout(() => { document.getElementById('mapUrlInput').focus(); }, 150);
+    }
 
-function confirmMapEdit() {
-  const url = document.getElementById('mapUrlInput').value.trim();
-  if (mapEditTarget !== null) {
-    days[mapEditTarget.dayIdx].items[mapEditTarget.itemIdx].url = url || null;
-    rawText = rebuildText();
-    saveToCloud(rawText);
-    renderDay();
-  }
-  document.getElementById('mapModal').style.display = 'none';
-  mapEditTarget = null;
-}
+    function confirmMapEdit() {
+      const url = document.getElementById('mapUrlInput').value.trim();
+      const pn = document.getElementById('mapPlaceName').value.trim();
+      if (mapEditTarget !== null) {
+        const item = days[mapEditTarget.dayIdx].items[mapEditTarget.itemIdx];
+        item.url = url || null;
+        item.placeName = pn || null;
+        rawText = rebuildText();
+        saveToCloud(rawText);
+        renderDay();
+      }
+      document.getElementById('mapModal').style.display = 'none';
+      mapEditTarget = null;
+    }
 
-function cancelMapEdit() {
-  document.getElementById('mapModal').style.display = 'none';
-  mapEditTarget = null;
-}
+    let routeEditTarget = null;
+    function clickRoute(dayIdx, itemIdx) {
+      const item = days[dayIdx].items[itemIdx];
+      const nextWithUrl = item.url ? days[dayIdx].items.slice(itemIdx+1).find(it => it.url) : null;
+      if (!nextWithUrl) return;
+      const origin = item.placeName || item.content;
+      const dest = nextWithUrl.placeName || nextWithUrl.content;
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&travelmode=transit`;
+      window.open(url, '_blank');
+      routeEditTarget = {dayIdx, itemIdx};
+      const rt = item.routeTime || {};
+      document.getElementById('rt-bus').value = rt.bus || '';
+      document.getElementById('rt-walk').value = rt.walk || '';
+      document.getElementById('rt-metro').value = rt.metro || '';
+      document.getElementById('rt-train').value = rt.train || '';
+      document.getElementById('routeModal').style.display = 'flex';
+    }
+    function saveRouteTime() {
+      if (routeEditTarget) {
+        const item = days[routeEditTarget.dayIdx].items[routeEditTarget.itemIdx];
+        const v = id => { const n=parseInt(document.getElementById(id).value); return (!isNaN(n)&&n>0)?n:null; };
+        const rt = {bus:v('rt-bus'),walk:v('rt-walk'),metro:v('rt-metro'),train:v('rt-train')};
+        item.routeTime = Object.values(rt).some(x=>x) ? rt : null;
+        rawText = rebuildText(); saveToCloud(rawText); renderDay();
+      }
+      document.getElementById('routeModal').style.display = 'none';
+      routeEditTarget = null;
+    }
+    function cancelRouteTime() {
+      document.getElementById('routeModal').style.display = 'none';
+      routeEditTarget = null;
+    }
 
-function startMapLongPress(dayIdx, itemIdx) {
-  mapLongTimer = setTimeout(() => { endMapLongPress(); openMapEdit(dayIdx, itemIdx); }, 1500);
-}
+    function cancelMapEdit() {
+      document.getElementById('mapModal').style.display = 'none';
+      mapEditTarget = null;
+    }
 
-function endMapLongPress() {
-  if (mapLongTimer) { clearTimeout(mapLongTimer); mapLongTimer = null; }
-}
+    function startMapLongPress(dayIdx, itemIdx) {
+      mapLongTimer = setTimeout(() => { endMapLongPress(); openMapEdit(dayIdx, itemIdx); }, 1500);
+    }
 
-// ===== EDIT MODAL =====
-function openModal() {
-  setMode('full', document.querySelector('.mode-btn'));
-  document.getElementById('modalOverlay').classList.add('open');
-}
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+    function endMapLongPress() {
+      if (mapLongTimer) { clearTimeout(mapLongTimer); mapLongTimer = null; }
+    }
 
-function setMode(mode, btn) {
-  editMode = mode;
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const ui = document.getElementById('modeUI');
-  if (mode === 'full') {
-    ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">貼上完整行程文字，系統會自動比對差異</p>
-      <textarea class="textarea" id="editText" placeholder="貼上完整行程...">${rawText}</textarea>`;
-  } else if (mode === 'add') {
-    ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">新增一行到指定日期</p>
+    // ===== EDIT MODAL =====
+    function openModal() {
+      setMode('full', document.querySelector('.mode-btn'));
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+    function setMode(mode, btn) {
+      editMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const ui = document.getElementById('modeUI');
+      if (mode === 'full') {
+        ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">貼上完整行程文字，系統會自動比對差異</p>
+      <textarea class="textarea" id="editText" placeholder="貼上完整行程...">${rebuildText()}</textarea>`;
+      } else if (mode === 'add') {
+        ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">新增一行到指定日期</p>
       <div class="input-row">
-        <select class="input-field" id="addDay" style="max-width:120px">${days.map((d,i)=>`<option value="${i}">${d.date}</option>`).join('')}</select>
+        <select class="input-field" id="addDay" style="max-width:120px">${days.map((d, i) => `<option value="${i}">${d.date}</option>`).join('')}</select>
         <input class="input-field" id="addTime" placeholder="時間 如 14:00" style="max-width:100px">
       </div>
       <input class="input-field" id="addContent" placeholder="活動內容" style="width:100%;margin-bottom:8px">
       <input class="input-field" id="addUrl" placeholder="地圖連結（選填）" style="width:100%">`;
-  } else {
-    ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">選擇要刪除的行程</p>
-      <select class="input-field" id="delDay" onchange="updateDelItems()" style="width:100%;margin-bottom:8px">${days.map((d,i)=>`<option value="${i}">${d.date} ${d.title}</option>`).join('')}</select>
+      } else {
+        ui.innerHTML = `<p style="font-size:13px;color:#7A6350;margin-bottom:8px">選擇要刪除的行程</p>
+      <select class="input-field" id="delDay" onchange="updateDelItems()" style="width:100%;margin-bottom:8px">${days.map((d, i) => `<option value="${i}">${d.date} ${d.title}</option>`).join('')}</select>
       <select class="input-field" id="delItem" style="width:100%"></select>`;
-    updateDelItems();
-  }
-}
-
-function updateDelItems() {
-  const di = parseInt(document.getElementById('delDay').value);
-  const sel = document.getElementById('delItem');
-  if (!sel) return;
-  sel.innerHTML = days[di].items.map((item, i) => `<option value="${i}">${item.time} ${item.content}</option>`).join('') || '<option>（無行程）</option>';
-}
-
-async function applyEdit() {
-  if (editMode === 'full') {
-    const newText = document.getElementById('editText').value.trim();
-    if (!newText) return;
-    rawText = newText;
-    days = parseItinerary(rawText);
-    activeDay = Math.min(activeDay, days.length - 1);
-  } else if (editMode === 'add') {
-    const di = parseInt(document.getElementById('addDay').value);
-    const time = document.getElementById('addTime').value.trim();
-    const content = document.getElementById('addContent').value.trim();
-    const url = document.getElementById('addUrl').value.trim();
-    if (!content) return;
-    let type = 'sight';
-    if (/搭|高鐵|火車|公車|飛機/.test(content)) type = 'transport';
-    else if (/午餐|晚餐|早餐|吃/.test(content)) type = 'meal';
-    else if (/飯店|住宿/.test(content)) type = 'hotel';
-    const newItem = { time: time || '待定', content, type, url: url || null };
-    const items = days[di].items;
-    if (time) {
-      let idx = items.findIndex(it => it.time > time);
-      if (idx === -1) idx = items.length;
-      items.splice(idx, 0, newItem);
-    } else {
-      items.push(newItem);
+        updateDelItems();
+      }
     }
-    rawText = rebuildText();
-  } else {
-    const di = parseInt(document.getElementById('delDay').value);
-    const ii = parseInt(document.getElementById('delItem').value);
-    days[di].items.splice(ii, 1);
-    rawText = rebuildText();
-  }
-  closeModal();
-  renderTabs();
-  renderDay();
-  await saveToCloud(rawText);
-}
 
-function rebuildText() {
-  return days.map(d => {
-    let out = `${d.date}${d.weekday ? ' (' + d.weekday + ')' : ''} ${d.title}\n`;
-    d.items.forEach(item => {
-      out += `${item.time} ${item.content}\n`;
-      if (item.note) out += `>${item.note}\n`;
-      if (item.url) out += `${item.url}\n`;
+    function updateDelItems() {
+      const di = parseInt(document.getElementById('delDay').value);
+      const sel = document.getElementById('delItem');
+      if (!sel) return;
+      sel.innerHTML = days[di].items.map((item, i) => `<option value="${i}">${item.time} ${item.content}</option>`).join('') || '<option>（無行程）</option>';
+    }
+
+    async function applyEdit() {
+      if (editMode === 'full') {
+        const newText = document.getElementById('editText').value.trim();
+        if (!newText) return;
+        rawText = newText;
+        days = parseItinerary(rawText);
+        activeDay = Math.min(activeDay, days.length - 1);
+      } else if (editMode === 'add') {
+        const di = parseInt(document.getElementById('addDay').value);
+        const time = document.getElementById('addTime').value.trim();
+        const content = document.getElementById('addContent').value.trim();
+        const url = document.getElementById('addUrl').value.trim();
+        if (!content) return;
+        let type = 'sight';
+        if (/搭|高鐵|火車|公車|飛機/.test(content)) type = 'transport';
+        else if (/午餐|晚餐|早餐|吃/.test(content)) type = 'meal';
+        else if (/飯店|住宿/.test(content)) type = 'hotel';
+        const newItem = { time: time || '待定', content, type, url: url || null };
+        const items = days[di].items;
+        if (time) {
+          let idx = items.findIndex(it => it.time > time);
+          if (idx === -1) idx = items.length;
+          items.splice(idx, 0, newItem);
+        } else {
+          items.push(newItem);
+        }
+        rawText = rebuildText();
+      } else {
+        const di = parseInt(document.getElementById('delDay').value);
+        const ii = parseInt(document.getElementById('delItem').value);
+        days[di].items.splice(ii, 1);
+        rawText = rebuildText();
+      }
+      closeModal();
+      renderTabs();
+      renderDay();
+      await saveToCloud(rawText);
+    }
+
+    function rebuildText() {
+      return days.map(d => {
+        let out = `${d.date}${d.weekday ? ' (' + d.weekday + ')' : ''} ${d.title}\n`;
+        d.items.forEach(item => {
+          out += `${item.time} ${item.content}\n`;
+          if (item.note) out += `>${item.note}\n`;
+          if (item.url) out += `${item.url}\n`;
+          if (item.placeName) out += `地名：${item.placeName}\n`;
+          if (item.routeTime && Object.values(item.routeTime).some(v=>v)) {
+            const rt=item.routeTime, parts=[];
+            if(rt.bus) parts.push(`公車${rt.bus}min`);
+            if(rt.walk) parts.push(`走路${rt.walk}min`);
+            if(rt.metro) parts.push(`地鐵${rt.metro}min`);
+            if(rt.train) parts.push(`私鐵${rt.train}min`);
+            out += `路線時間：${parts.join('/')}\n`;
+          }
+        });
+        if (d.lunch) out += `午餐：${d.lunch}\n`;
+        if (d.dinner) out += `晚餐：${d.dinner}\n`;
+        if (d.transport) out += `交通：${d.transport}\n`;
+        if (d.hotel) out += `住宿：${d.hotel}\n`;
+        if (d.rainBackup) out += `雨備：${d.rainBackup}\n`;
+        d.notes.forEach(n => out += `提醒：${n}\n`);
+        return out;
+      }).join('\n');
+    }
+
+    // ===== INIT =====
+    loadFromCloud();
+
+    // Close modal on overlay click
+    document.getElementById('modalOverlay').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
     });
-    if (d.lunch) out += `午餐：${d.lunch}\n`;
-    if (d.dinner) out += `晚餐：${d.dinner}\n`;
-    if (d.transport) out += `交通：${d.transport}\n`;
-    if (d.hotel) out += `住宿：${d.hotel}\n`;
-    if (d.rainBackup) out += `雨備：${d.rainBackup}\n`;
-    d.notes.forEach(n => out += `提醒：${n}\n`);
-    return out;
-  }).join('\n');
-}
-
-// ===== INIT =====
-loadFromCloud();
-
-// Close modal on overlay click
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-</script>
+  </script>
 </body>
+
 </html>
