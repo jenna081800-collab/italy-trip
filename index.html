@@ -488,6 +488,7 @@
       margin-right: 6px
     }
   .t-route-time{font-size:11px;color:#5C8A5C;margin-top:5px;font-weight:600;line-height:1.5}
+  .t-alt{font-size:11px;color:#7A6350;background:#F5EFE6;padding:2px 6px;border-radius:6px;display:inline-block;margin-top:4px;margin-right:4px}
   </style>
 </head>
 
@@ -538,6 +539,11 @@
       <input id="mapUrlInput" type="url" placeholder="https://maps.app.goo.gl/..." style="width:100%;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:8px;box-sizing:border-box">
       <p style="font-size:12px;color:#A89080;margin-bottom:4px">查路線用地名（選填，沒填會用行程文字）</p>
       <input id="mapPlaceName" type="text" placeholder="例如：Colosseum, Rome" style="width:100%;border:2px solid #D4B896;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:14px;box-sizing:border-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <p style="font-size:12px;color:#A89080;margin:0">備選地點（例如其他選項）</p>
+        <button onclick="addAltInput()" style="background:none;border:none;color:#5C8A5C;font-size:12px;font-weight:700;cursor:pointer">+ 新增選項</button>
+      </div>
+      <div id="mapAltsContainer" style="margin-bottom:14px;display:flex;flex-direction:column;gap:6px"></div>
       <div style="display:flex;gap:10px">
         <button onclick="cancelMapEdit()" style="flex:1;padding:12px;border:2px solid #D4B896;border-radius:14px;background:#fff;font-size:14px;font-weight:700;cursor:pointer">取消</button>
         <button onclick="confirmMapEdit()" style="flex:2;padding:12px;border:none;border-radius:14px;background:#3B2A1A;color:#F5EFE6;font-size:14px;font-weight:700;cursor:pointer">確認</button>
@@ -665,6 +671,10 @@
         if (line.startsWith('提醒：') || line.startsWith('提醒:')) { cur.notes.push(line.replace(/^提醒[：:]/, '')); continue; }
         if (line.startsWith('備註：') || line.startsWith('備註:')) { cur.notes.push(line.replace(/^備註[：:]/, '')); continue; }
         if (line.startsWith('雨備：') || line.startsWith('雨備:')) { cur.rainBackup = line.replace(/^雨備[：:]/, ''); continue; }
+        if ((line.startsWith('備選：') || line.startsWith('備選:')) && cur.items.length) {
+          cur.items[cur.items.length-1].alternatives = line.replace(/^備選[：:]\s*/, '').split('/').map(s=>s.trim()).filter(Boolean);
+          continue;
+        }
         if ((line.startsWith('地名：') || line.startsWith('地名:')) && cur.items.length) { cur.items[cur.items.length-1].placeName = line.replace(/^地名[：:]/, ''); continue; }
         if ((line.startsWith('路線時間：') || line.startsWith('路線時間:')) && cur.items.length) {
           const last = cur.items[cur.items.length-1]; const rt = line.replace(/^路線時間[：:]/, '');
@@ -686,7 +696,7 @@
           else if (/飯店|住宿|入住|寄物|退房/.test(content)) type = 'hotel';
 
           const urlMatch = content.match(/https?:\/\/[^\s]+/);
-          cur.items.push({ time: tm[1], content: content.replace(/https?:\/\/[^\s]+/g, '').trim(), type, url: urlMatch ? urlMatch[0] : null, placeName: null, routeTime: null });
+          cur.items.push({ time: tm[1], content: content.replace(/https?:\/\/[^\s]+/g, '').trim(), type, url: urlMatch ? urlMatch[0] : null, placeName: null, routeTime: null, alternatives: null });
           continue;
         }
 
@@ -836,6 +846,7 @@
           const rt = item.routeTime || {};
           const rtParts = [rt.bus?`公車 ${rt.bus}min`:'', rt.walk?`走路 ${rt.walk}min`:'', rt.metro?`地鐵 ${rt.metro}min`:'', rt.train?`私鐵 ${rt.train}min`:''].filter(Boolean);
           const rtDisplay = rtParts.length ? `<div class="t-route-time">【${rtParts.join(' / ')}】</div>` : '';
+          const altsDisplay = (item.alternatives && item.alternatives.length) ? `<div style="margin-top:6px">${item.alternatives.map((alt, idx) => `<span class="t-alt">選項${idx+1}：${alt}</span>`).join('')}</div>` : '';
           html += `<div class="t-item t-type-${item.type}">
         <div class="t-left">
           <div class="t-time">${item.time}</div>
@@ -848,6 +859,7 @@
               ? `<a class="t-map" href="${item.url}" target="_blank" ontouchstart="startMapLongPress(${activeDay},${i})" ontouchend="endMapLongPress()" ontouchmove="endMapLongPress()" oncontextmenu="openMapEdit(${activeDay},${i});return false;">地圖 ↗</a>`
               : `<button class="t-map t-map-auto" onclick="openMapEdit(${activeDay},${i})">貼上地圖連結 +</button>`}
           ${nextWithUrl ? `<button class="t-route" onclick="clickRoute(${activeDay},${i})">→ 查路線</button>${rtDisplay}` : ''}
+          ${altsDisplay}
         </div>
       </div>`;
         });
@@ -883,11 +895,27 @@
     let mapEditTarget = null;
     let mapLongTimer = null;
 
+    function addAltInput(val = '') {
+      const c = document.getElementById('mapAltsContainer');
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.gap = '6px';
+      row.innerHTML = `<input type="text" class="alt-input" value="${val}" placeholder="選項名稱" style="flex:1;border:2px solid #D4B896;border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;background:#fff;box-sizing:border-box"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#A89080;font-size:16px;cursor:pointer;padding:0 4px">×</button>`;
+      c.appendChild(row);
+    }
+
     function openMapEdit(dayIdx, itemIdx) {
       mapEditTarget = { dayIdx, itemIdx };
       const item = days[dayIdx].items[itemIdx];
       document.getElementById('mapUrlInput').value = item.url || '';
       document.getElementById('mapPlaceName').value = item.placeName || '';
+      
+      const c = document.getElementById('mapAltsContainer');
+      c.innerHTML = '';
+      if (item.alternatives && item.alternatives.length) {
+        item.alternatives.forEach(alt => addAltInput(alt));
+      }
+
       document.getElementById('mapModal').style.display = 'flex';
       setTimeout(() => { document.getElementById('mapUrlInput').focus(); }, 150);
     }
@@ -895,10 +923,13 @@
     function confirmMapEdit() {
       const url = document.getElementById('mapUrlInput').value.trim();
       const pn = document.getElementById('mapPlaceName').value.trim();
+      const alts = Array.from(document.querySelectorAll('.alt-input')).map(i => i.value.trim()).filter(Boolean);
+      
       if (mapEditTarget !== null) {
         const item = days[mapEditTarget.dayIdx].items[mapEditTarget.itemIdx];
         item.url = url || null;
         item.placeName = pn || null;
+        item.alternatives = alts.length ? alts : null;
         rawText = rebuildText();
         saveToCloud(rawText);
         renderDay();
@@ -1038,6 +1069,7 @@
           if (item.note) out += `>${item.note}\n`;
           if (item.url) out += `${item.url}\n`;
           if (item.placeName) out += `地名：${item.placeName}\n`;
+          if (item.alternatives && item.alternatives.length) out += `備選：${item.alternatives.join(' / ')}\n`;
           if (item.routeTime && Object.values(item.routeTime).some(v=>v)) {
             const rt=item.routeTime, parts=[];
             if(rt.bus) parts.push(`公車${rt.bus}min`);
