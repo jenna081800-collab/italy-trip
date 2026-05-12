@@ -398,7 +398,10 @@ function renderDay() {
       const isLast = i === d.items.length - 1;
       const next = isLast ? null : d.items[i+1];
       const dur = next ? timeDiff(item.time, next.time) : null;
-      const routeUrl = next ? `https://www.google.com/maps/dir/${encodeURIComponent(item.content)}/${encodeURIComponent(next.content)}?travelmode=transit` : null;
+      const nextWithUrl = item.url ? d.items.slice(i + 1).find(it => it.url) : null;
+      const routeUrl = nextWithUrl
+        ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(item.content)}&destination=${encodeURIComponent(nextWithUrl.content)}&travelmode=transit`
+        : null;
       html += `<div class="t-item t-type-${item.type}">
         <div class="t-left">
           <div class="t-time">${item.time}</div>
