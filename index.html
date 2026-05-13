@@ -832,16 +832,25 @@
       return { transport: '交通', meal: '餐食', hotel: '住宿', sight: '景點' }[type] || '';
     }
 
+    function openFullRoute(dayIdx) {
+      const d = days[dayIdx];
+      const daySpots = d.items.filter(it => it.type === 'sight' || it.type === 'meal' || it.type === 'hotel').map(it => it.content).join('|');
+      if (!daySpots) return;
+      const origin = d.items[0].content;
+      const dest = d.items[d.items.length-1].content;
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&waypoints=${encodeURIComponent(daySpots)}&travelmode=transit`;
+      window.open(url, '_blank');
+    }
+
     function renderDay() {
       const d = days[activeDay];
       if (!d) return;
       const daySpots = d.items.filter(it => it.type === 'sight' || it.type === 'meal' || it.type === 'hotel').map(it => it.content).join('|');
-      const routeUrl = daySpots ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(d.items[0].content)}&destination=${encodeURIComponent(d.items[d.items.length-1].content)}&waypoints=${encodeURIComponent(daySpots)}&travelmode=transit` : '#';
       let html = `<div class="day-title" style="justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:10px">
           <span class="day-badge">第 ${activeDay + 1} 天</span><span class="day-name">${d.title}</span>
         </div>
-        ${daySpots ? `<button onclick="window.open('${routeUrl}', '_blank')" style="background:#E8F0E8;color:#5C7A5C;border:none;border-radius:12px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🗺️ 完整路線</button>` : ''}
+        ${daySpots ? `<button onclick="openFullRoute(${activeDay})" style="background:#E8F0E8;color:#5C7A5C;border:none;border-radius:12px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🗺️ 完整路線</button>` : ''}
       </div>`;
       html += '<div class="timeline">';
       if (!d.items.length) { html += '<div class="empty">暫無行程</div>'; }
