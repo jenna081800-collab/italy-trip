@@ -832,25 +832,31 @@
       return { transport: '交通', meal: '餐食', hotel: '住宿', sight: '景點' }[type] || '';
     }
 
-    function openFullRoute(dayIdx) {
-      const d = days[dayIdx];
-      const daySpots = d.items.filter(it => it.type === 'sight' || it.type === 'meal' || it.type === 'hotel').map(it => it.content).join('|');
-      if (!daySpots) return;
-      const origin = d.items[0].content;
-      const dest = d.items[d.items.length-1].content;
-      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&waypoints=${encodeURIComponent(daySpots)}&travelmode=transit`;
-      window.open(url, '_blank');
+    function cleanPlaceName(name) {
+      if (!name) return '';
+      return name.replace(/^(早餐|午餐|晚餐|遊玩|住宿|飯店|交通|回飯店)[：:\s]+/, '').split('+')[0].split('(')[0].split('（')[0].trim();
     }
 
     function renderDay() {
       const d = days[activeDay];
       if (!d) return;
-      const daySpots = d.items.filter(it => it.type === 'sight' || it.type === 'meal' || it.type === 'hotel').map(it => it.content).join('|');
+      
+      const validItems = d.items.filter(it => it.type === 'sight' || it.type === 'meal' || it.type === 'hotel');
+      let routeBtnHtml = '';
+      if (validItems.length > 0) {
+        const origin = cleanPlaceName(validItems[0].content);
+        const dest = cleanPlaceName(validItems[validItems.length-1].content);
+        const waypointsArr = validItems.slice(1, validItems.length - 1).map(it => cleanPlaceName(it.content));
+        const waypointsStr = waypointsArr.length > 0 ? `&waypoints=${encodeURIComponent(waypointsArr.join('|'))}` : '';
+        const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}${waypointsStr}&travelmode=transit`;
+        routeBtnHtml = `<a href="${routeUrl}" target="_blank" style="background:#E8F0E8;color:#5C7A5C;border:none;border-radius:12px;padding:6px 12px;font-size:12px;font-weight:700;text-decoration:none;display:inline-block;">🗺️ 完整路線</a>`;
+      }
+
       let html = `<div class="day-title" style="justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:10px">
           <span class="day-badge">第 ${activeDay + 1} 天</span><span class="day-name">${d.title}</span>
         </div>
-        ${daySpots ? `<button onclick="openFullRoute(${activeDay})" style="background:#E8F0E8;color:#5C7A5C;border:none;border-radius:12px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🗺️ 完整路線</button>` : ''}
+        ${routeBtnHtml}
       </div>`;
       html += '<div class="timeline">';
       if (!d.items.length) { html += '<div class="empty">暫無行程</div>'; }
@@ -996,10 +1002,10 @@
       const item = days[dayIdx].items[itemIdx];
       const next = days[dayIdx].items[itemIdx+1];
       if (!next) return;
-      const origin = item.content;
-      const dest = next.content;
+      const origin = cleanPlaceName(item.content);
+      const dest = cleanPlaceName(next.content);
       const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&travelmode=transit`;
-      window.open(url, '_blank');
+      window.open(url, '_blank') || (window.location.href = url);
       routeEditTarget = {dayIdx, itemIdx};
       const rt = item.routeTime || {};
       document.getElementById('rt-bus').value = rt.bus || '';
@@ -1011,8 +1017,8 @@
 
     function clickSingleMap(dayIdx, itemIdx) {
       const item = days[dayIdx].items[itemIdx];
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.content)}`;
-      window.open(url, '_blank');
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanPlaceName(item.content))}`;
+      window.open(url, '_blank') || (window.location.href = url);
     }
 
     function saveRouteTime() {
